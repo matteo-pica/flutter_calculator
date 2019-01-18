@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -102,28 +102,185 @@ class _MyHomePageState extends State<MyHomePage> {
       //   ),
       // ),
       body: Calcolatrice(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _incrementCounter,
+      //   tooltip: 'Increment',
+      //   child: Icon(Icons.add),
+      // ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
-
 
 class Calcolatrice extends StatefulWidget {
   @override
   CalcolatriceState createState() => CalcolatriceState();
 }
 
-class CalcolatriceState extends State<Calcolatrice>{
-  Widget build(BuildContext context){
-    return  Column(
-      children: <Widget>[
-        Text("Display"),
-        Text("Griglia di pulsanti"),
-      ],
+class CalcolatriceState extends State<Calcolatrice> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        margin: EdgeInsets.all(20),
+        child: Column(
+          children: <Widget>[
+            DisplayCalc(),
+            ButtonsGrid(),
+          ],
+        ));
+  }
+}
+
+class DisplayCalc extends StatefulWidget {
+  @override
+  DisplayCalcState createState() => DisplayCalcState();
+}
+
+class DisplayCalcState extends State<DisplayCalc> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 20),
+      height: 250,
+      decoration: BoxDecoration(
+          border: Border.all(width: 5, color: Theme.of(context).primaryColor),
+          borderRadius: const BorderRadius.all(Radius.circular(5))),
+      child: Center(child: Text("Schermo")),
     );
   }
 }
+
+class ButtonsGrid extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+          child: Container(
+        // decoration: BoxDecoration(
+        //     border: Border.all(width: 5, color: Theme.of(context).primaryColor),
+        //     borderRadius: const BorderRadius.all(Radius.circular(5))),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "7",
+                ),
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "8",
+                ),
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "9",
+                ),
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "/",
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "4",
+                ),
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "5",
+                ),
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "6",
+                ),
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "*",
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "1",
+                ),
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "2",
+                ),
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "3",
+                ),
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "-",
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "C",
+                ),
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "0",
+                ),
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "=",
+                ),
+                _MyButton(
+                  // onPressed: _incrementCounter,
+                  // tooltip: '7',
+                  button: "+",
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MyButton extends StatelessWidget {
+  final String button;
+  _MyButton({this.button});
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      // onPressed: _incrementCounter,
+      // tooltip: '7',
+      child: Text(button),
+    );
+  }
+}
+
+// FloatingActionButton(
+//         onPressed: _incrementCounter,
+//         tooltip: 'Increment',
+//         child: Icon(Icons.add),
+//       ),
