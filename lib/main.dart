@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
+import 'package:dart2_constant/math.dart' as math_polyfill;
+import 'package:math_expressions/math_expressions.dart';
 
 void main() => runApp(MyApp());
 
@@ -7,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'FlutterCalc',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -20,7 +23,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.green,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Dumbest Flutter Calculator'),
     );
   }
 }
@@ -44,19 +47,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -116,26 +106,82 @@ class Calcolatrice extends StatefulWidget {
   CalcolatriceState createState() => CalcolatriceState();
 }
 
+Parser p = Parser();
+Expression exp;
+double eval;
+ContextModel cm = new ContextModel();
 class CalcolatriceState extends State<Calcolatrice> {
+  String lastClickedBtn = "";
+  String toShowOnScreen = "";
+  int firstFactor = 0, secondFactor = 0;
+  String operatore;
+  void clickedButton(String clicked) {
+    print("clicked $lastClickedBtn now");
+    int digit = int.tryParse(clicked);
+    String toShow;
+    if (digit != null) {
+      // Sto inserendo il primo numero
+      if (operatore == null) {
+        firstFactor = (firstFactor * 10) + digit;
+        toShow = "$firstFactor";
+      }else{
+        secondFactor = (secondFactor * 10) + digit;
+        toShow = "$secondFactor";
+      }
+    } else {
+      // Non sto cliccando un numero
+      switch (clicked) {
+        case "+":
+        case "*":
+        case "-":
+        case "/":
+          operatore = clicked;
+          toShow = "";
+          break;
+        case "C":
+        case "=":
+          if(clicked == "="){
+            exp = p.parse("$firstFactor $operatore $secondFactor");
+            eval = exp.evaluate(EvaluationType.REAL,cm);
+            toShow = "$eval";
+          }else{
+            toShow = "";
+          }
+          operatore = null;
+          firstFactor = 0;
+          secondFactor = 0;
+          break;
+      }
+    }
+    setState(() {
+      lastClickedBtn = clicked;
+      toShowOnScreen = toShow;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
         margin: EdgeInsets.all(20),
         child: Column(
           children: <Widget>[
-            DisplayCalc(),
-            ButtonsGrid(),
+            DisplayCalc(toShow: toShowOnScreen),
+            ButtonsGrid(
+              onClickBtn: clickedButton,
+            ),
           ],
         ));
   }
 }
 
-class DisplayCalc extends StatefulWidget {
-  @override
-  DisplayCalcState createState() => DisplayCalcState();
-}
+class DisplayCalc extends StatelessWidget {
+  final String toShow;
+  DisplayCalc({@required this.toShow});
+//   @override
+//   DisplayCalcState createState() => DisplayCalcState();
+// }
 
-class DisplayCalcState extends State<DisplayCalc> {
+// class DisplayCalcState extends State<DisplayCalc> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -144,16 +190,18 @@ class DisplayCalcState extends State<DisplayCalc> {
       decoration: BoxDecoration(
           border: Border.all(width: 5, color: Theme.of(context).primaryColor),
           borderRadius: const BorderRadius.all(Radius.circular(5))),
-      child: Center(child: Text("Schermo")),
+      child: Center(child: Text(toShow)),
     );
   }
 }
 
 class ButtonsGrid extends StatelessWidget {
+  ButtonsGrid({@required this.onClickBtn});
+  final ValueChanged<String> onClickBtn;
   @override
   Widget build(BuildContext context) {
     return Expanded(
-          child: Container(
+      child: Container(
         // decoration: BoxDecoration(
         //     border: Border.all(width: 5, color: Theme.of(context).primaryColor),
         //     borderRadius: const BorderRadius.all(Radius.circular(5))),
@@ -164,100 +212,100 @@ class ButtonsGrid extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "7",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "7",
+                    onClickBtn: onClickBtn),
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "8",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "8",
+                    onClickBtn: onClickBtn),
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "9",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "9",
+                    onClickBtn: onClickBtn),
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "/",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "/",
+                    onClickBtn: onClickBtn),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "4",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "4",
+                    onClickBtn: onClickBtn),
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "5",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "5",
+                    onClickBtn: onClickBtn),
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "6",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "6",
+                    onClickBtn: onClickBtn),
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "*",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "*",
+                    onClickBtn: onClickBtn),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "1",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "1",
+                    onClickBtn: onClickBtn),
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "2",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "2",
+                    onClickBtn: onClickBtn),
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "3",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "3",
+                    onClickBtn: onClickBtn),
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "-",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "-",
+                    onClickBtn: onClickBtn),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "C",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "C",
+                    onClickBtn: onClickBtn),
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "0",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "0",
+                    onClickBtn: onClickBtn),
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "=",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "=",
+                    onClickBtn: onClickBtn),
                 _MyButton(
-                  // onPressed: _incrementCounter,
-                  // tooltip: '7',
-                  button: "+",
-                ),
+                    // onPressed: _incrementCounter,
+                    // tooltip: '7',
+                    button: "+",
+                    onClickBtn: onClickBtn),
               ],
             ),
           ],
@@ -269,10 +317,15 @@ class ButtonsGrid extends StatelessWidget {
 
 class _MyButton extends StatelessWidget {
   final String button;
-  _MyButton({this.button});
+  _MyButton({@required this.button, @required this.onClickBtn});
+  final ValueChanged<String> onClickBtn;
+  void _handleTap() {
+    onClickBtn(button);
+  }
+
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      // onPressed: _incrementCounter,
+      onPressed: _handleTap,
       // tooltip: '7',
       child: Text(button),
     );
