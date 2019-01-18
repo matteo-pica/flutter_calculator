@@ -113,7 +113,7 @@ ContextModel cm = new ContextModel();
 class CalcolatriceState extends State<Calcolatrice> {
   String lastClickedBtn = "";
   String toShowOnScreen = "";
-  int firstFactor = 0, secondFactor = 0;
+  double firstFactor = 0, secondFactor = 0;
   String operatore;
   void clickedButton(String clicked) {
     print("clicked $lastClickedBtn now");
@@ -144,11 +144,12 @@ class CalcolatriceState extends State<Calcolatrice> {
             exp = p.parse("$firstFactor $operatore $secondFactor");
             eval = exp.evaluate(EvaluationType.REAL,cm);
             toShow = "$eval";
+            firstFactor = eval;
           }else{
             toShow = "";
+            firstFactor = 0;
           }
           operatore = null;
-          firstFactor = 0;
           secondFactor = 0;
           break;
       }
